@@ -2,23 +2,25 @@ name: Daily Update by 23f3004102@ds.study.iitm.ac.in
 
 on:
   schedule:
-    - cron: '0 12 * * *'  # Runs daily at 12:00 UTC (5:30 PM IST)
+    - cron: '0 12 * * *'
   workflow_dispatch:
 
 jobs:
   update:
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Create daily commit by 23f3004102@ds.study.iitm.ac.in
+      - name: Create daily commit
         run: |
-          echo "$(date): Daily automated update" >> status.log
+          echo "$(date +'%Y-%m-%d %H:%M:%S')" >> status.log
           git config user.name "DevSync Bot"
           git config user.email "23f3004102@ds.study.iitm.ac.in"
           git add status.log
-          git commit -m "Daily update: $(date)"
+          git commit -m "Daily update: $(date +'%Y-%m-%d %H:%M:%S')" || echo "No changes to commit"
           git push
